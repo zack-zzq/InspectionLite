@@ -1,6 +1,8 @@
 from email.mime.text import MIMEText
 from email.utils import make_msgid, formataddr, parseaddr
 from importlib import import_module
+
+from push.base import PushBase
 from json import dumps
 from os import listdir
 from smtplib import SMTPException, SMTP_SSL
@@ -22,14 +24,19 @@ def _push_register() -> list:
 
     :return: 推送方法列表
     """
-    push_methods = [
-        push_method_file[: push_method_file.rfind('.')]
-        for push_method_file in listdir('push')
-        if (push_method_file.endswith('.py')) and (push_method_file != 'base.py')
-    ]
-    for push_method_file_index in range(len(push_methods)):
-        push_method_module = import_module(f'push.{push_methods[push_method_file_index]}')
-        push_methods[push_method_file_index] = eval(f'push_method_module.{push_method_module.__dir__()[-1]}')
+    push_methods = []
+    for push_method_file in listdir('push'):
+        if (push_method_file.endswith('.py')) and (push_method_file != 'base.py'):
+            module_name = push_method_file[: push_method_file.rfind('.')]
+            push_method_module = import_module(f'push.{module_name}')
+            for attr_name in dir(push_method_module):
+                attr = getattr(push_method_module, attr_name)
+                try:
+                    if issubclass(attr, PushBase) and attr is not PushBase:
+                        push_methods.append(attr)
+                        break
+                except TypeError:
+                    continue
     return push_methods
 
 
