@@ -1,0 +1,17 @@
+[project]
+name = "inspectionlite"
+version = "1.0.0"
+description = "Ease your web browsering. "
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "beautifulsoup4>=4.13.4",
+    "certifi>=2025.7.14",
+    "charset-normalizer>=3.4.2",
+    "idna>=3.10",
+    "pymysql>=1.1.1",
+    "pypinyin>=0.54.0",
+    "requests>=2.32.4",
+    "soupsieve>=2.7",
+    "urllib3>=2.5.0",
+]
