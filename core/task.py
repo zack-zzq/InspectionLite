@@ -29,7 +29,7 @@ def _push_register() -> list:
     ]
     for push_method_file_index in range(len(push_methods)):
         push_method_module = import_module(f'push.{push_methods[push_method_file_index]}')
-        push_methods[push_method_file_index] = eval(f'push_method_module.{push_method_module.__dir__()[-1]}')
+        push_methods[push_method_file_index] = getattr(push_method_module, push_method_module.__dir__()[-1])
     return push_methods
 
 
