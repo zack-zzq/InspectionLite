@@ -108,10 +108,12 @@ class Task:
 
         task_request = task_url_parse(self.url)
         if task_request:
+            parsed_url = urlparse(self.url)
+            base_url = f'{parsed_url.scheme}://{parsed_url.hostname}'
             for item in task_request.select(self.css_selector):
                 write_title = item.text.strip()
                 write_url = urljoin(
-                    f'{urlparse(self.url).scheme}://{urlparse(self.url).hostname}',
+                    base_url,
                     item.attrs['href']
                 )
 
