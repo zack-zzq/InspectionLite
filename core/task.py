@@ -16,7 +16,7 @@ from core.parse import task_url_parse
 from core.sql import task_table_initialization, task_table_check, task_table_insert
 
 
-def _push_register() -> list:
+def _push_register() -> tuple:
     """
     注册推送方法。
 
@@ -30,7 +30,10 @@ def _push_register() -> list:
     for push_method_file_index in range(len(push_methods)):
         push_method_module = import_module(f'push.{push_methods[push_method_file_index]}')
         push_methods[push_method_file_index] = eval(f'push_method_module.{push_method_module.__dir__()[-1]}')
-    return push_methods
+    return tuple(push_methods)
+
+
+PUSH_METHODS = _push_register()
 
 
 def _failure_process(failure_list: list):
@@ -94,7 +97,7 @@ class Task:
         self.css_selector = get_task_css(task)
         self.subscribers = subscribers
         self.sql_connect = sql_connect
-        self.push_methods = _push_register()
+        self.push_methods = PUSH_METHODS
 
         self.table_name = slug(task, separator='')
         if task_table_initialization(
