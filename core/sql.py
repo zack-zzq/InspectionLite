@@ -58,7 +58,7 @@ def task_table_check(
     """
     try:
         with database.cursor() as database_cursor:
-            result = database_cursor.execute(f"select * from {table_name} where title='{title}' and url='{url}'")
+            result = database_cursor.execute(f"select * from {table_name} where title=%s and url=%s", (title, url))
             database_cursor.close()
         if result > 0:
             return True
@@ -83,7 +83,7 @@ def task_table_insert(
     """
     try:
         with database.cursor() as database_cursor:
-            database_cursor.execute(f"insert into {table_name} (title, url) VALUES ('{title}', '{url}')")
+            database_cursor.execute(f"insert into {table_name} (title, url) VALUES (%s, %s)", (title, url))
             database.commit()
             database_cursor.close()
     except Error:
